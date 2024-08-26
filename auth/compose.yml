@@ -22,8 +22,8 @@ services:
       AUTHENTIK_POSTGRESQL__NAME: ${PG_DB:-authentik}
       AUTHENTIK_POSTGRESQL__PASSWORD: ${PG_PASS}
     volumes:
-      - ./media:/media
-      - ./custom-templates:/templates
+      - ./exter/media:/media
+      - ./exter/custom-templates:/templates
     env_file:
       - .env
     ports:
@@ -45,9 +45,9 @@ services:
     user: root
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./media:/media
-      - ./certs:/certs
-      - ./exters/custom-templates:/templates
+      - ./exter/media:/media
+      - ./exter/certs:/certs
+      - ./exter/custom-templates:/templates
     env_file:
       - .env
     depends_on:
