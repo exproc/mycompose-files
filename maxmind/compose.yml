@@ -1,0 +1,25 @@
+services:
+  
+  geoipupdate:
+    image: ghcr.io/maxmind/geoipupdate:latest
+    container_name: geoipupdate
+    hostname: maxmind
+    restart: unless-stopped
+    #user: ${PUID}:${PGID}
+    volumes:
+       - ${APP_PATH}GeoIP/:/usr/share/GeoIP
+       #- geoip-data:/usr/share/GeoIP
+    networks:
+      - proxy
+    
+    secrets:
+      - maxmind_account_id
+      - maxmind_license_key
+    environment:
+      - GEOIPUPDATE_EDITION_IDS
+      - GEOIPUPDATE_FREQUENCY
+      - GEOIPUPDATE_ACCOUNT_ID_FILE
+      - GEOIPUPDATE_LICENSE_KEY_FILE
+#volumes:
+#  geoip-data:
+#    name: geoip-data
