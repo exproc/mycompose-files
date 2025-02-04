@@ -1,0 +1,90 @@
+
+services:
+  
+  traefik:
+    image: traefik:v3.3.1
+    container_name: traefik
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    
+    depends_on:
+      crowdsec:
+         condition: service_healthy
+      socket-proxy:
+          condition: service_healthy
+
+    hostname: ${SERVICES_TRAEFIK_HOSTNAME:-traefik}
+    healthcheck:
+      test: ["CMD", "traefik", "healthcheck", "--ping"]
+      timeout: 1s
+      interval: 10s
+      retries: 3
+      start_period: 10s
+
+    ports:
+        - mode: host
+          target: 80
+          published: "80"
+          protocol: tcp
+        - mode: host
+          target: 443
+          published: "443"
+          protocol: tcp
+        - mode: host
+          target: 443
+          published: "443"
+          protocol: udp
+
+    volumes:
+      - ${APP_PATH}traefik/data/traefik.yml:/traefik.yml
+      - ${APP_PATH}traefik/ssl/:/ssl
+      - ${APP_PATH}traefik/rules:/rules
+      - /var/log/traefik/:/var/log/traefik/
+
+  
+
+    #labels:
+     # - traefik.enable=true
+     # HTTP Routers
+    labels:
+    - traefik.enable=true
+    - traefik.http.routers.traefik-dashboad.entrypoints=https
+    - traefik.http.routers.traefik-dashboad.middlewares=chain-basic-auth@file
+    - traefik.http.routers.traefik-dashboad.rule=${SERVICES_TRAEFIK_LABELS_TRAEFIK_HOST:-HOST(`traefik.${DOMAINN}`)}
+    - traefik.http.routers.traefik-dashboad.service=api@internal
+    - traefik.http.routers.traefik-dashboad.tls=true
+    - traefik.http.routers.traefik-dashboad.tls.certresolver=le
+    #- traefik.http.services.traefik-dashboad.loadbalancer.sticky.cookie.httpOnly=true
+    #- traefik.http.services.traefik-dashboad.loadbalancer.sticky.cookie.secure=true
+    -  traefik.http.routers.pingweb.rule=PathPrefix(`/ping`)
+    -  traefik.http.routers.pingweb.service=ping@internal
+    -  traefik.http.routers.pingweb.entrypoints=https
+
+      ## yourdomain.com cert
+    -  traefik.http.routers.traefik.tls.domains[0].main=${DOMAINN}
+    -  traefik.http.routers.traefik.tls.domains[0].sans=*.${DOMAINN}
+
+
+    networks:
+      crowdsec:
+        ipv4_address: ${SERVICES_TRAEFIK_NETWORKS_CROWDSEC_IPV4:-172.31.127.253}
+        ipv6_address: ${SERVICES_TRAEFIK_NETWORKS_CROWDSEC_IPV6:-fd00:1:be:a:7001:0:3e:6ffe}
+      proxy:
+        ipv4_address: ${SERVICES_TRAEFIK_NETWORKS_PROXY_IPV4:-172.31.191.254}
+        ipv6_address: ${SERVICES_TRAEFIK_NETWORKS_PROXY_IPV6:-fd00:1:be:a:7001:0:3e:7fff}
+      socket:
+        ipv4_address: ${SERVICES_TRAEFIK_NETWORKS_SOCKET_PROXY_IPV4:-172.31.255.253}
+        ipv6_address: ${SERVICES_TRAEFIK_NETWORKS_SOCKET_PROXY_IPV6:-fd00:1:be:a:7001:0:3e:8ffe}
+    secrets:
+      - cf_api_token
+      - basic_auth_credentials
+      - cf_email
+
+    environment:
+      - CF_DNS_API_TOKEN_FILE
+      - CF_EMAIL_FILE
+      - HTPASSWD_FILE
+      - TZ
+      
+      
