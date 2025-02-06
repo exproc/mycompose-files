@@ -7,8 +7,8 @@ services:
     restart: unless-stopped
     #user: ${PUID}:${PGID}
     volumes:
-       - ${APP_PATH}GeoIP/:/usr/share/GeoIP
-       #- geoip-data:/usr/share/GeoIP
+      # - ${APP_PATH}GeoIP/:/usr/share/GeoIP
+       - geoip-data:/usr/share/GeoIP
     networks:
       - proxy
     
@@ -20,6 +20,7 @@ services:
       - GEOIPUPDATE_FREQUENCY
       - GEOIPUPDATE_ACCOUNT_ID_FILE
       - GEOIPUPDATE_LICENSE_KEY_FILE
+      - TZ	
 #volumes:
 #  geoip-data:
 #    name: geoip-data
