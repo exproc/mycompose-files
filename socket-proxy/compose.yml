@@ -1,0 +1,57 @@
+services:
+  socket-proxy:
+    container_name: ${SERVICES_SOCKET_PROXY_CONTAINER_NAME:-socket-proxy}
+    environment:
+      - TZ=${TZ} 
+      - ALLOW_START=0 #optional
+      - ALLOW_STOP=0 #optional
+      - ALLOW_RESTARTS=0 #optional
+      - AUTH=0 #optional
+      - BUILD=0 #optional
+      - COMMIT=0 #optional
+      - CONFIGS=0 #optional
+      - CONTAINERS=1 #optional
+      - DISABLE_IPV6=0 #optional
+      - DISTRIBUTION=0 #optional
+      - EVENTS=1 #optional
+      - EXEC=0 #optional
+      - IMAGES=0 #optional
+      - INFO=1 #optional
+      - NETWORKS=1 #optional
+      - NODES=0 #optional
+      - PING=1 #optional
+      - PLUGINS=0 #optional
+      - POST=0 #optional
+      - PROXY_READ_TIMEOUT=240 #optional
+      - SECRETS=0 #optional
+      - SERVICES=0 #optional
+      - SESSION=0 #optional
+      - SWARM=0 #optional
+      - SYSTEM=0 #optional
+      - TASKS=0 #optional
+      - VERSION=1 #optional
+      - VOLUMES=0 #optional
+
+    #env_file: ${ENV_PATH}/socket-proxy/.env
+    hostname: ${SERVICES_SOCKET_PROXY_HOSTNAME:-socket-proxy}
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s -o /dev/null -w '%{http_code}' http://localhost:2375 | grep -q '403' || exit 1"]
+      timeout: 1s
+      interval: 10s
+      retries: 3
+      start_period: 10s
+    image: ${SERVICES_SOCKET_PROXY_IMAGE:-lscr.io/linuxserver/socket-proxy}:${SERVICES_SOCKET_PROXY_IMAGE_VERSION:-latest}
+    #image: ghcr.io/linuxserver/socket-proxy
+    #image:  ghcr.io/linuxserver/socket-proxy
+    networks:
+      socket:
+        ipv4_address: ${SERVICES_SOCKET_PROXY_NETWORKS_SOCKET_PROXY_IPV4:-172.31.255.254}
+        ipv6_address: ${SERVICES_SOCKET_PROXY_NETWORKS_SOCKET_PROXY_IPV6:-fd00:1:be:a:7001:0:3e:8fff}
+    read_only: true
+    restart: unless-stopped
+    tmpfs:
+      - /run
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+
