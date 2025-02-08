@@ -4,8 +4,8 @@ services:
     image: traefik:v3.3.1
     container_name: traefik
     restart: unless-stopped
-    security_opt:
-      - no-new-privileges:true
+    #security_opt:
+      #- no-new-privileges:true
     
     depends_on:
     #  crowdsec:
@@ -42,19 +42,22 @@ services:
       - /var/log/traefik/:/var/log/traefik/
 
     labels:
-    -  traefik.enable="true"
-    -  traefik.http.routers.traefik-dashboad.entrypoints=https
-    -  traefik.http.routers.traefik-dashboad.middlewares=default@file, traefik-dashboard-auth@file
-    -  traefik.http.routers.traefik-dashboad.rule=Host(`dash.${DOMAINN}`)
-    -  traefik.http.routers.traefik-dashboad.service=api@internal
-    -  traefik.http.routers.traefik-dashboad.tls="true"
-    -  traefik.http.routers.traefik-dashboad.tls.certresolver=le
-    -  traefik.http.services.traefik-dashboad.loadbalancer.sticky.cookie.httpOnly="true"
-    -  traefik.http.services.traefik-dashboad.loadbalancer.sticky.cookie.secure="true"
+    - traefik.enable=true
+    - traefik.http.routers.traefik-dashboad.entrypoints=https
+    - traefik.http.routers.traefik-dashboad.middlewares=chain-basic-auth@file
+    - traefik.http.routers.traefik-dashboad.rule=${SERVICES_TRAEFIK_LABELS_TRAEFIK_HOST:-HOST(`dash.${DOMAINN}`)}
+    - traefik.http.routers.traefik-dashboad.service=api@internal
+    - traefik.http.routers.traefik-dashboad.tls=true
+    - traefik.http.routers.traefik-dashboad.tls.certresolver=le
+    #- traefik.http.services.traefik-dashboad.loadbalancer.sticky.cookie.httpOnly=true
+    #- traefik.http.services.traefik-dashboad.loadbalancer.sticky.cookie.secure=true
     -  traefik.http.routers.pingweb.rule=PathPrefix(`/ping`)
     -  traefik.http.routers.pingweb.service=ping@internal
-    -  traefik.http.routers.pingweb.entrypoints=https  
-    
+    -  traefik.http.routers.pingweb.entrypoints=https
+
+      ## yourdomain.com cert
+    -  traefik.http.routers.traefik.tls.domains[0].main=${DOMAINN}
+    -  traefik.http.routers.traefik.tls.domains[0].sans=*.${DOMAINN}
 
 
     networks:
