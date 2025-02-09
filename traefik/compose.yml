@@ -1,15 +1,17 @@
+
 services:
   
   traefik:
-    image: traefik:v3.3.1
+    #image: traefik:v3.3.1
+    image: ${traefik_IMAGE:-traefik}:${traefik_TAG:-v3.3.1}
     container_name: traefik
     restart: unless-stopped
-    #security_opt:
-      #- no-new-privileges:true
+    security_opt:
+      - no-new-privileges:true
     
     depends_on:
     #  crowdsec:
-    #     condition: service_healthy
+   #     condition: service_healthy
       socket-proxy:
           condition: service_healthy
 
@@ -22,18 +24,25 @@ services:
       start_period: 10s
 
     ports:
-        - mode: host
-          target: 80
-          published: "80"
-          protocol: tcp
-        - mode: host
-          target: 443
-          published: "443"
-          protocol: tcp
-        - mode: host
-          target: 443
-          published: "443"
-          protocol: udp
+      - name: http
+        host_ip: 0.0.0.0    # All interfaces, not a specific one
+        target: 80          # Container Port
+        published: "80"     # STRING
+        protocol: tcp       # tcp or udp
+        app_protocol: http  # OPTIONAL. Layer 7 Protocol used.  "Richer behavior"
+        mode: host          # or Ingress for load balancing
+      - name: https
+        host_ip: 0.0.0.0
+        target: 443
+        published: "443"
+        protocol: tcp
+        app_protocol: https
+        mode: host
+   # ports:
+    #  - 80:80
+    #  - 443:443
+    #  - 443:443/tcp # Uncomment if you want HTTP3
+    #  - 443:443/udp # Uncomment if you want HTTP3
 
     volumes:
       - ${APP_PATH}traefik/data/traefik.yml:/traefik.yml
@@ -41,6 +50,11 @@ services:
       - ${APP_PATH}traefik/rules:/rules
       - /var/log/traefik/:/var/log/traefik/
 
+  
+
+    #labels:
+     # - traefik.enable=true
+     # HTTP Routers
     labels:
     - traefik.enable=true
     - traefik.http.routers.traefik-dashboad.entrypoints=https
@@ -61,9 +75,15 @@ services:
 
 
     networks:
-      - socket
-      - proxy
-      #- crowdsec
+     # crowdsec:
+     #   ipv4_address: ${SERVICES_TRAEFIK_NETWORKS_CROWDSEC_IPV4:-172.31.127.253}
+     #   ipv6_address: ${SERVICES_TRAEFIK_NETWORKS_CROWDSEC_IPV6:-fd00:1:be:a:7001:0:3e:6ffe}
+      proxy:
+        ipv4_address: ${SERVICES_TRAEFIK_NETWORKS_PROXY_IPV4:-172.31.191.254}
+        ipv6_address: ${SERVICES_TRAEFIK_NETWORKS_PROXY_IPV6:-fd00:1:be:a:7001:0:3e:7fff}
+      socket:
+        ipv4_address: ${SERVICES_TRAEFIK_NETWORKS_SOCKET_PROXY_IPV4:-172.31.255.253}
+        ipv6_address: ${SERVICES_TRAEFIK_NETWORKS_SOCKET_PROXY_IPV6:-fd00:1:be:a:7001:0:3e:8ffe}
     secrets:
       - cf_api_token
       - basic_auth_credentials
@@ -74,5 +94,5 @@ services:
       - CF_EMAIL_FILE
       - HTPASSWD_FILE
       - TZ
-      
-      
+
+
