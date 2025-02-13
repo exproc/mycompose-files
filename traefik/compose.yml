@@ -38,6 +38,13 @@ services:
         protocol: tcp
         app_protocol: https
         mode: host
+      - name: https
+        host_ip: 0.0.0.0
+        target: 443
+        published: "443"
+        protocol: udp
+        app_protocol: https
+        mode: host
    # ports:
     #  - 80:80
     #  - 443:443
