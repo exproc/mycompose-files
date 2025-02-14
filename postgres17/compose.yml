@@ -18,17 +18,37 @@ services:
         retries: 3
         start_period: 10s
         timeout: 10s
-    
+    #network_mode: host
     networks:
-       - socket
        - proxy
+       - socket
        #- crowdsec
       
     secrets:
       - postgres_password
-      
-    ports:
-      - mode: host
-        target: 5432
-        published: 5432
-        protocol: tcp
+    
+
+   # ports:
+   #   - mode: host
+    #    target: 5432
+    #    published: 5432
+    #    protocol: tcp
+
+    #labels:
+    #- traefik.enable=true
+    #- traefik.enable=false
+    #- traefik.tcp.routers.db.rule=HostSNI(`db.${DOMAINN}`)
+    #- traefik.tcp.services.db.loadbalancer.server.port=5432
+    #- traefik.tcp.routers.db.entrypoints=postgres
+    #- traefik.tcp.routers.db.tls=true
+    
+
+    volumes:
+      - postgres17_data:/var/lib/postgresql/data
+      - ${SEC_PATH}/newdb:/docker-entrypoint-initdb.d
+ #     - ${SEC_PATH}/ssl/:/var/lib/ssl/
+#      - ${APP_PATH}GeoIP/:/usr/share/GeoIP
+
+  postgres17_data:
+   name: postgres17_data
+
