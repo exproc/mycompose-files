@@ -49,6 +49,5 @@ services:
  #     - ${SEC_PATH}/ssl/:/var/lib/ssl/
 #      - ${APP_PATH}GeoIP/:/usr/share/GeoIP
 
-  postgres17_data:
-   name: postgres17_data
+
 
