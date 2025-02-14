@@ -1,0 +1,34 @@
+services:
+  db:
+    image: registry.gitlab.com/coolpub/postgres17
+    #image: postgres:alpine
+    container_name: postgress
+    hostname: postgres
+    restart: unless-stopped
+
+    command: -c ssl=on -c ssl_cert_file=/var/lib/postgresql/server.crt -c ssl_key_file=/var/lib/postgresql/server.key
+    
+    environment:
+      TZ: ${TZ} 
+      POSTGRES_PASSWORD_FILE:
+    
+    healthcheck:
+        test: pg_isready
+        interval: 60s
+        retries: 3
+        start_period: 10s
+        timeout: 10s
+    
+    networks:
+       - socket
+       - proxy
+       #- crowdsec
+      
+    secrets:
+      - postgres_password
+      
+    ports:
+      - mode: host
+        target: 5432
+        published: 5432
+        protocol: tcp
