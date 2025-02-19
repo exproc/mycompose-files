@@ -108,4 +108,4 @@ secrets:
   basic_auth_credentials:
     file: ${SEC_PATH}traefik/basic_auth_credentials
   cf_email:
-    file: ${SEC_PATH}traefikcloudflare-email.secret
+    file: ${SEC_PATH}traefik/cloudflare-email.secret
