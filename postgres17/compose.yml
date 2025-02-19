@@ -1,53 +1,38 @@
 services:
   db:
     image: registry.gitlab.com/coolpub/postgres17
-    #image: postgres:alpine
     container_name: postgress
     hostname: postgres
     restart: unless-stopped
 
     command: -c ssl=on -c ssl_cert_file=/var/lib/postgresql/server.crt -c ssl_key_file=/var/lib/postgresql/server.key
     
-    environment:
-      TZ: ${TZ} 
-      POSTGRES_PASSWORD_FILE:
+    secrets:
+      - postgres_password
     
+    #ports:
+      #- mode: host
+        #target: 5432
+        #published: 5432
+        #protocol: tcp
+    networks:
+     - proxy
+
+    environment:
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
+      TZ:
+
     healthcheck:
         test: pg_isready
         interval: 60s
         retries: 3
         start_period: 10s
         timeout: 10s
-    #network_mode: host
-    networks:
-       - proxy
-       - socket
-       #- crowdsec
-      
-    secrets:
-      - postgres_password
-    
-
-   # ports:
-   #   - mode: host
-    #    target: 5432
-    #    published: 5432
-    #    protocol: tcp
-
-    #labels:
-    #- traefik.enable=true
-    #- traefik.enable=false
-    #- traefik.tcp.routers.db.rule=HostSNI(`db.${DOMAINN}`)
-    #- traefik.tcp.services.db.loadbalancer.server.port=5432
-    #- traefik.tcp.routers.db.entrypoints=postgres
-    #- traefik.tcp.routers.db.tls=true
-    
 
     volumes:
       - postgres17_data:/var/lib/postgresql/data
       - ${SEC_PATH}/newdb:/docker-entrypoint-initdb.d
- #     - ${SEC_PATH}/ssl/:/var/lib/ssl/
-#      - ${APP_PATH}GeoIP/:/usr/share/GeoIP
 
-
-
+secrets:
+  postgres_password:
+    file: ${SEC_PATH}postgres_password
