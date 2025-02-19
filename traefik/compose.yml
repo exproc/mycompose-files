@@ -102,4 +102,12 @@ services:
       - HTPASSWD_FILE
       - TZ
 
-
+secrets:
+  cf_api_token:
+    file: ${SEC_PATH}traefik/cf_api_token
+  basic_auth_credentials:
+    file: ${SEC_PATH}traefik/basic_auth_credentials
+  cf_email:
+    file: ${SEC_PATH}traefik/cloudflare-email.secret
+  postgres_password:
+    file: ${SEC_PATH}/postgres_password
