@@ -1,0 +1,41 @@
+  services:
+   collabora:
+    image: collabora/code:latest
+    container_name: collabora
+    #depends_on:
+      #nextcloud:
+      #  condition: service_started
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - /etc/timezone:/etc/timezone
+    restart: unless-stopped
+    environment:
+      - "dictionaries=en_US"
+      - "domain=office.${DOMAINN}"
+      - "extra_params=--o:ssl.enable=false --o:ssl.termination=true"
+      - "LC_CTYPE=C.UTF-8"
+      #- "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+      #- "username=${COLLABORA_USERNAME}"
+      #- "password=${COLLABORA_PASSWORD}"
+      - "VIRTUAL_HOST=office.${DOMAINN}"
+      - "VIRTUAL_PORT=9980"
+      - "VIRTUAL_PROTO=https"
+    networks:
+      - proxy
+        #ipv4_address: ${COLLABORA_IP}
+    #ports:
+      #- "9980:9980"
+    hostname: collabora
+    
+    labels:
+      #- "org.opencontainers.image.ref.name=ubuntu"
+      #- "org.opencontainers.image.version=18.04"
+      - "traefik.docker.network=proxy"
+      - "traefik.enable=true"
+      - "traefik.http.routers.collabora.entrypoints=https"
+      - "traefik.http.routers.collabora.rule=Host(`office.${DOMAINN}`)"
+      - "traefik.http.routers.collabora.service=collabora"
+      - "traefik.http.routers.collabora.tls=true"
+      - "traefik.http.routers.collabora.tls.certresolver=le"
+      - "traefik.http.routers.collabora.tls.options=default"
+      - "traefik.http.services.collabora.loadbalancer.server.port=9980"
