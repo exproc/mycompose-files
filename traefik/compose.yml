@@ -109,5 +109,3 @@ secrets:
     file: ${SEC_PATH}traefik/basic_auth_credentials
   cf_email:
     file: ${SEC_PATH}traefik/cloudflare-email.secret
-  postgres_password:
-    file: ${SEC_PATH}/postgres_password

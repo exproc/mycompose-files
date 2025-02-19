@@ -35,4 +35,4 @@ services:
 
 secrets:
   postgres_password:
-    file: ${SEC_PATH}postgres_password
+    file: ${SEC_PATH}/postgres_password
