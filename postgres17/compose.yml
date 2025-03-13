@@ -31,7 +31,7 @@ services:
 
     volumes:
       - postgres17_data:/var/lib/postgresql/data
-      - ${SEC_PATH}/newdb:/docker-entrypoint-initdb.d
+      - ${SEC_PATH}/postgres:/docker-entrypoint-initdb.d
 
 secrets:
   postgres_password:
