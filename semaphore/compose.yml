@@ -1,0 +1,70 @@
+services:
+ semaphore:
+        #ports:
+            #- 3000:3000
+        depends_on:
+            - db
+        image: semaphoreui/semaphore
+        
+        container_name: semaphore
+        hostname: semaphore
+        restart: unless-stopped
+        secrets:
+          - semaphore_db_pass
+          - semaphore_admin
+          - semaphore_admin_password
+          - semaphore_access_key_encryption
+          #- semaphore_email_sender
+          #-  semaphore_email_host
+          #- semaphore_email_username
+          #- semaphore_email_password
+          #- semaphore_gotify_token
+
+        environment:
+            SEMAPHORE_DB_DIALECT: postgres
+            SEMAPHORE_DB_HOST: db
+            SEMAPHORE_DB_NAME: semaphore
+            SEMAPHORE_DB_USER: semaphore
+            SEMAPHORE_DB_PASS_FILE:  /run/secrets/semaphore_db_pass
+            SEMAPHORE_ADMIN_FILE: /run/secrets/semaphore_admin
+            SEMAPHORE_ADMIN_PASSWORD_FILE: /run/secrets/semaphore_admin_password
+            #SEMAPHORE_ADMIN_EMAIL: /run/secrets/semaphore_admin_email
+            SEMAPHORE_ACCESS_KEY_ENCRYPTION_FILE: /run/secrets/semaphore_access_key_encryption
+            #SEMAPHORE_EMAIL_SENDER_FILE: /run/secrets/semaphore_email_username
+            #SEMAPHORE_EMAIL_HOST_FILE: /run/secrets/semaphore_email_host
+            #SEMAPHORE_EMAIL_PORT: 465
+            #SEMAPHORE_EMAIL_USERNAME_FILE: /run/secrets/semaphore_email_username
+            #SEMAPHORE_EMAIL_PASSWORD_FILE: /run/secrets/semaphore_email_password
+            #SEMAPHORE_EMAIL_SECURE: True
+            #SEMAPHORE_GOTIFY_ALERT: True
+            #SEMAPHORE_GOTIFY_URL: https://gotoify.${DOMAINN}
+            #SEMAPHORE_GOTIFY_TOKEN_FILE:  /run/secrets/semaphore_gotify_token
+        
+
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.seaphore-ui.rule=Host(`semaphore.${DOMAINN}`)"
+            - "traefik.http.services.seaphore-ui.loadbalancer.server.port=3000"
+            - "traefik.http.routers.seaphore-ui.entrypoints=https"
+            - "traefik.http.routers.seaphore-ui.tls=true"
+            - "traefik.http.routers.seaphore-ui.tls.certresolver=le"  
+
+        volumes:
+            - semaphore_data:/var/lib/semaphore
+            - semaphore_config:/etc/semaphore
+            - semaphore_tmp:/tmp/semaphore
+            - semaphore_home:/home/seaphore
+
+        networks:
+            - proxy
+            - socket
+
+secrets:
+  semaphore_db_pass:
+    file: ${SEC_PATH}semaphore_db_pass
+  semaphore_admin:
+    file: ${SEC_PATH}semaphore_admin  
+  semaphore_admin_password:
+    file: ${SEC_PATH}semaphore_admin_password
+  semaphore_access_key_encryption:
+    file: ${SEC_PATH}semaphore_access_key_encryption 
