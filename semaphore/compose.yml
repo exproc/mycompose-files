@@ -62,7 +62,7 @@ services:
 secrets:
   semaphore_db_pass:
     file: ${SEC_PATH}semaphore_db_pass
-  semaphore_admin:
+  semaphore_admin_name:
     file: ${SEC_PATH}semaphore_admin_name 
   semaphore_admin_password:
     file: ${SEC_PATH}semaphore_admin_password
