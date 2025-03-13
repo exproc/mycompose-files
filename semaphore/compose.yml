@@ -39,7 +39,7 @@ services:
             #SEMAPHORE_GOTIFY_ALERT: True
             #SEMAPHORE_GOTIFY_URL: https://gotoify.${DOMAINN}
             #SEMAPHORE_GOTIFY_TOKEN_FILE:  /run/secrets/semaphore_gotify_token
-	    TZ:
+	    TZ
         
 
         labels:
