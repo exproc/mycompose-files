@@ -21,25 +21,25 @@ services:
           #- semaphore_gotify_token
 
         environment:
-            SEMAPHORE_DB_DIALECT: postgres
-            SEMAPHORE_DB_HOST: db
-            SEMAPHORE_DB_NAME: semaphore
-            SEMAPHORE_DB_USER: semaphore
-            SEMAPHORE_DB_PASS_FILE:  /run/secrets/semaphore_db_pass
-            SEMAPHORE_ADMIN_FILE: /run/secrets/semaphore_admin_name
-            SEMAPHORE_ADMIN_PASSWORD_FILE: /run/secrets/semaphore_admin_password
-            #SEMAPHORE_ADMIN_EMAIL: /run/secrets/semaphore_admin_email
-            SEMAPHORE_ACCESS_KEY_ENCRYPTION_FILE: /run/secrets/semaphore_access_key_encryption
-            #SEMAPHORE_EMAIL_SENDER_FILE: /run/secrets/semaphore_email_username
-            #SEMAPHORE_EMAIL_HOST_FILE: /run/secrets/semaphore_email_host
-            #SEMAPHORE_EMAIL_PORT: 465
-            #SEMAPHORE_EMAIL_USERNAME_FILE: /run/secrets/semaphore_email_username
-            #SEMAPHORE_EMAIL_PASSWORD_FILE: /run/secrets/semaphore_email_password
-            #SEMAPHORE_EMAIL_SECURE: True
-            #SEMAPHORE_GOTIFY_ALERT: True
-            #SEMAPHORE_GOTIFY_URL: https://gotoify.${DOMAINN}
-            #SEMAPHORE_GOTIFY_TOKEN_FILE:  /run/secrets/semaphore_gotify_token
-	    TZ
+          -  SEMAPHORE_DB_DIALECT=postgres
+          -  SEMAPHORE_DB_HOST=db
+          -  SEMAPHORE_DB_NAME=semaphore
+          -  SEMAPHORE_DB_USER=semaphore
+          -  SEMAPHORE_DB_PASS_FILE
+          -  SEMAPHORE_ADMIN_FILE
+          -  SEMAPHORE_ADMIN_PASSWORD_FILE
+          -  #SEMAPHORE_ADMIN_EMAIL: /run/secrets/semaphore_admin_email
+          -  SEMAPHORE_ACCESS_KEY_ENCRYPTION_FILE
+          - #SEMAPHORE_EMAIL_SENDER_FILE: /run/secrets/semaphore_email_username
+          - #SEMAPHORE_EMAIL_HOST_FILE: /run/secrets/semaphore_email_host
+          -  #SEMAPHORE_EMAIL_PORT: 465
+          -  #SEMAPHORE_EMAIL_USERNAME_FILE: /run/secrets/semaphore_email_username
+          -  #SEMAPHORE_EMAIL_PASSWORD_FILE: /run/secrets/semaphore_email_password
+          -  #SEMAPHORE_EMAIL_SECURE: True
+          -  #SEMAPHORE_GOTIFY_ALERT: True
+          -  #SEMAPHORE_GOTIFY_URL: https://gotoify.${DOMAINN}
+          -  #SEMAPHORE_GOTIFY_TOKEN_FILE:  /run/secrets/semaphore_gotify_token
+	  -  TZ
         
 
         labels:
