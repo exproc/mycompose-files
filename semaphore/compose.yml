@@ -11,7 +11,7 @@ services:
         restart: unless-stopped
         secrets:
           - semaphore_db_pass
-          - semaphore_admin
+          - semaphore_admin_name
           - semaphore_admin_password
           - semaphore_access_key_encryption
           #- semaphore_email_sender
@@ -26,7 +26,7 @@ services:
             SEMAPHORE_DB_NAME: semaphore
             SEMAPHORE_DB_USER: semaphore
             SEMAPHORE_DB_PASS_FILE:  /run/secrets/semaphore_db_pass
-            SEMAPHORE_ADMIN_FILE: /run/secrets/semaphore_admin
+            SEMAPHORE_ADMIN_FILE: /run/secrets/semaphore_admin_name
             SEMAPHORE_ADMIN_PASSWORD_FILE: /run/secrets/semaphore_admin_password
             #SEMAPHORE_ADMIN_EMAIL: /run/secrets/semaphore_admin_email
             SEMAPHORE_ACCESS_KEY_ENCRYPTION_FILE: /run/secrets/semaphore_access_key_encryption
@@ -63,7 +63,7 @@ secrets:
   semaphore_db_pass:
     file: ${SEC_PATH}semaphore_db_pass
   semaphore_admin:
-    file: ${SEC_PATH}semaphore_admin  
+    file: ${SEC_PATH}semaphore_admin_name 
   semaphore_admin_password:
     file: ${SEC_PATH}semaphore_admin_password
   semaphore_access_key_encryption:
