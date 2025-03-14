@@ -14,6 +14,7 @@ services:
           - semaphore_admin_name
           - semaphore_admin_password
           - semaphore_access_key_encryption
+          - semaphore_admin_email
           #- semaphore_email_sender
           #-  semaphore_email_host
           #- semaphore_email_username
@@ -29,7 +30,7 @@ services:
             SEMAPHORE_DB_PASS_FILE:  /run/secrets/semaphore_db_pass
             SEMAPHORE_ADMIN_FILE: /run/secrets/semaphore_admin_name
             SEMAPHORE_ADMIN_PASSWORD_FILE: /run/secrets/semaphore_admin_password
-            #SEMAPHORE_ADMIN_EMAIL: /run/secrets/semaphore_admin_email
+            SEMAPHORE_ADMIN_EMAIL: /run/secrets/semaphore_admin_email
             SEMAPHORE_ACCESS_KEY_ENCRYPTION_FILE: /run/secrets/semaphore_access_key_encryption
             #SEMAPHORE_EMAIL_SENDER_FILE: /run/secrets/semaphore_email_username
             #SEMAPHORE_EMAIL_HOST_FILE: /run/secrets/semaphore_email_host
@@ -58,14 +59,17 @@ services:
 
         networks:
             - proxy
-            - socket
+            
 
 secrets:
   semaphore_db_pass:
     file: ${SEC_PATH}semaphore_db_pass
   semaphore_admin_name:
     file: ${SEC_PATH}semaphore_admin_name 
+  semaphore_admin_email:
+    file: ${SEC_PATH}semaphore_admin_email 
   semaphore_admin_password:
     file: ${SEC_PATH}semaphore_admin_password
   semaphore_access_key_encryption:
     file: ${SEC_PATH}semaphore_access_key_encryption 
+  
