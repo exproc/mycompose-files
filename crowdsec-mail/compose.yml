@@ -31,3 +31,4 @@ services:
       - /var/log/crowdsec:/var/log/crowdsec:ro
       - ./acquis.d:/etc/crowdsec/acquis.d/
      # - ${APP_PATH}crowdsec/ntfy.yaml:/etc/crowdsec/notifications/ntfy.yaml
+      - ./info/:/etc/crowdsec/notifications/
