@@ -1,0 +1,32 @@
+services:
+  crowdsec:
+    container_name: crowdsec
+    hostname: crowdsec
+    healthcheck:
+      test: ["CMD", "cscli", "version"]
+      timeout: 2s
+      interval: 20s
+      retries: 5
+      start_period: 10s
+    image: crowdsecurity/crowdsec:latest
+    environment:
+     COLLECTIONS: "crowdsecurity/traefik crowdsecurity/http-cve crowdsecurity/whitelist-good-actors crowdsecurity/postfix crowdsecurity/dovecot crowdsecurity/nginx"
+     TZ:
+     PGID: "1011"
+    networks:
+      crowdsec:
+        ipv4_address: 172.31.127.254
+        ipv6_address: fd00:1:be:a:7001:0:3e:6fff
+      socket_proxy:
+        ipv4_address: 172.31.255.252
+        ipv6_address: fd00:1:be:a:7001:0:3e:8ffd
+    restart: unless-stopped
+   # security_opt:
+    #  - no-new-privileges=true
+    volumes:
+      - ${APP_PATH}crowdsec/config:/etc/crowdsec
+      - ${APP_PATH}crowdsec/data:/var/lib/crowdsec/data
+      - /var/log/auth.log:/var/log/auth.log:ro
+      - /var/log/traefik:/var/log/traefik:ro
+      - /var/log/crowdsec:/var/log/crowdsec:ro
+      - ./acquis.d:/etc/crowdsec/acquis.d/
