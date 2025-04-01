@@ -17,7 +17,7 @@ services:
       crowdsec:
         ipv4_address: 172.31.127.254
         ipv6_address: fd00:1:be:a:7001:0:3e:6fff
-      socket_proxy:
+      socket:
         ipv4_address: 172.31.255.252
         ipv6_address: fd00:1:be:a:7001:0:3e:8ffd
     restart: unless-stopped
