@@ -29,6 +29,7 @@ services:
       - /var/log/auth.log:/var/log/auth.log:ro
       - /var/log/traefik:/var/log/traefik:ro
       - /var/log/crowdsec:/var/log/crowdsec:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./acquis.d:/etc/crowdsec/acquis.d/
      # - ${APP_PATH}crowdsec/ntfy.yaml:/etc/crowdsec/notifications/ntfy.yaml
       - ./info/:/etc/crowdsec/notifications/
