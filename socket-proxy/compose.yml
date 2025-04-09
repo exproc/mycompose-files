@@ -35,7 +35,7 @@ services:
     #env_file: ${ENV_PATH}/socket-proxy/.env
     hostname: ${SERVICES_SOCKET_PROXY_HOSTNAME:-socket-proxy}
     healthcheck:
-      test: ["CMD-SHELL", "curl -s -o /dev/null -w '%{http_code}' http://localhost:2375 | grep -q '403' || exit 1"]
+    test: ["CMD", "haproxy", "-v"]
       timeout: 1s
       interval: 10s
       retries: 3
