@@ -35,7 +35,7 @@ services:
     #env_file: ${ENV_PATH}/socket-proxy/.env
     hostname: ${SERVICES_SOCKET_PROXY_HOSTNAME:-socket-proxy}
     healthcheck:
-    test: ["CMD", "haproxy", "-v"]
+      test: ["CMD", "haproxy", "-v"]
       timeout: 1s
       interval: 10s
       retries: 3
