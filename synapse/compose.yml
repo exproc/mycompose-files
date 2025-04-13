@@ -16,18 +16,18 @@ services:
   depends_on:
   - db
 
-networks:
-  - proxy
+  networks:
+   proxy:
 
-      labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.synapse.entrypoints=http"
-      - "traefik.http.routers.synapse.rule=Host(`mx.${DOMAINN}`)"
-      - "traefik.http.middlewares.synapse-https-redirect.redirectscheme.scheme=https"
-      - "traefik.http.routers.synapse.middlewares=synapse-https-redirect"
-      - "traefik.http.routers.synapse-secure.entrypoints=https"
-      - "traefik.http.routers.synapse-secure.rule=Host(`mx.${DOMAINN}`)"
-      - "traefik.http.routers.synapse-secure.tls=true"
-      - "traefik.http.routers.synapse-secure.service=synapse"
-      - "traefik.http.services.synapse.loadbalancer.server.port=8008"
-      - "traefik.docker.network=proxy"
+  labels:
+  - "traefik.enable=true"
+  - "traefik.http.routers.synapse.entrypoints=http"
+  - "traefik.http.routers.synapse.rule=Host(`mx.${DOMAINN}`)"
+  - "traefik.http.middlewares.synapse-https-redirect.redirectscheme.scheme=https"
+  - "traefik.http.routers.synapse.middlewares=synapse-https-redirect"
+  - "traefik.http.routers.synapse-secure.entrypoints=https"
+  - "traefik.http.routers.synapse-secure.rule=Host(`mx.${DOMAINN}`)"
+  - "traefik.http.routers.synapse-secure.tls=true"
+  - "traefik.http.routers.synapse-secure.service=synapse"
+  - "traefik.http.services.synapse.loadbalancer.server.port=8008"
+  - "traefik.docker.network=proxy"
