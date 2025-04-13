@@ -17,7 +17,7 @@ services:
   - db
 
 networks:
-  proxy:
+  - proxy
 
       labels:
       - "traefik.enable=true"
