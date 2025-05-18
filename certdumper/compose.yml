@@ -11,7 +11,7 @@ services:
         - /var/run/docker.sock:/var/run/docker.sock:ro
         - ${ssl}:/output:rw
       environment:
-        - DOMAIN=cchalifo.xyz
+        - DOMAIN=${DOMAINN}
         # If using wildcard certs instead of an explicit host cert,
         # use following line instead with just the TLD so certdumper
         # is able to find the cert.
