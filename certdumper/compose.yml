@@ -1,0 +1,18 @@
+services:
+    certdumper:
+      image: ghcr.io/kereis/traefik-certs-dumper
+      network_mode: none
+      restart: unless-stopped
+      container_name: certdumper
+      #command: --restart-containers mailcowdockerized-postfix-mailcow-1,mailcowdockerized-dovecot-mailcow-1,mailcowdockerized-nginx-mailcow-1
+      #command: --restart-containers 
+      volumes:
+        - ${APP_PATH}traefik/ssl/:/traefik:ro
+        - /var/run/docker.sock:/var/run/docker.sock:ro
+        - ${ssl}:/output:rw
+      environment:
+        - DOMAIN=cchalifo.xyz
+        # If using wildcard certs instead of an explicit host cert,
+        # use following line instead with just the TLD so certdumper
+        # is able to find the cert.
+        # - DOMAIN=YourDomain.com
