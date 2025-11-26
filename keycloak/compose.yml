@@ -1,0 +1,71 @@
+  services:
+    
+   keycloak:
+    container_name: keycloak
+#    image: quay.io/keycloak/keycloak:22.0.3
+    image: quay.io/keycloak/keycloak:24.0.5
+    command: start
+    
+    secrets:
+      - KC_DB_USERNAME
+      - KC_DB_PASSWORD
+      - KC_BOOTSTRAP_ADMIN_USERNAME
+      - KC_BOOTSTRAP_ADMIN_PASSWORD
+    
+    environment:
+      #KC_PROXY_ADDRESS_FORWARDING: true
+      KC_HOSTNAME: k.${DOMAINN}
+      KC_HTTP_ENABLED: true
+      KC_DB_SCHEMA: public
+
+      KC_BOOTSTRAP_ADMIN_USERNAME_FILE: /run/secrets/keycloak_admin_user
+      KC_BOOTSTRAP_ADMIN_PASSWORD_FILE: /run/secrets/keycloak_admin_password
+      KC_DB: postgres 
+      KC_DB_URL: jdbc:postgresql://db/keycloak
+      KC_DB_USERNAME_FILE: /run/secrets/keycloak_db_user
+      KC_DB_PASSWORD_FILE: /run/secrets/keycloak_db_pass
+      KC_PROXY_HEADERS: 'xforwarded'
+      PROXY_ADDRESS_FORWARDING: 'true'
+
+#    volumes:
+#      - ./providers/:/opt/keycloak/providers    
+#      - ./themes/:/opt/keycloak/themes
+    networks:
+      - proxy
+    
+    labels:
+      # Enable Traefik for this container
+      - "traefik.enable=true"
+      # Match incoming requests on a specific hostname
+      - "traefik.http.routers.keycloak.rule=Host(`k.${DOMAINN}`)"
+      # Assign the router to a named Traefik service
+      - "traefik.http.routers.keycloak.service=keycloak"
+      # Use the 'websecure' (HTTPS) entry point
+      - "traefik.http.routers.keycloak.entrypoints=https"
+      # Define the internal container port for routing
+      - "traefik.http.services.keycloak.loadbalancer.server.port=8080"
+      # Enable TLS on this router
+      - "traefik.http.routers.keycloak.tls=true"
+      # Use Let's Encrypt for certificate management
+      - "traefik.http.routers.keycloak.tls.certresolver=le"
+      # Pass the original Host header to the container
+      - "traefik.http.services.keycloak.loadbalancer.passhostheader=true"
+      # Apply a compression middleware
+      - "traefik.http.routers.keycloak.middlewares=compresstraefik"
+      # Define settings for the compression middleware
+      - "traefik.http.middlewares.compresstraefik.compress=true"
+      # Specify which Docker network Traefik should use for routing
+      - "traefik.docker.network=proxy"
+    restart: unless-stopped
+
+
+  secrets:
+   KC_DB_USERNAME:
+    file: ${SEC_PATH}keycloak_db_user
+   KC_DB_PASSWORD:
+    file: ${SEC_PATH}keycloak_db_pass
+   KC_BOOTSTRAP_ADMIN_USERNAME:
+    file: ${SEC_PATH}keycloak_admin_user
+   KC_BOOTSTRAP_ADMIN_PASSWORD:
+    file: ${SEC_PATH}keycloak_admin_password
+
