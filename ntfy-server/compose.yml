@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  ntfy:
+    image: binwiederhier/ntfy:latest
+    container_name: ntfy
+    command:
+      - serve
+    user: "${UID}:${GID}"  # Run as UID:GID 1000
+    environment:
+      - TZ=America/New_York
+    volumes:
+      - ${APP_PATH}ntfy/cache:/var/cache/ntfy
+      - ${APP_PATH}ntfy/etc:/etc/ntfy
+    networks:
+      - proxy
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      # HTTP Router
+      - "traefik.http.routers.ntfy.rule=Host(`ntfy.${DOMAINN}`)"
+      - "traefik.http.routers.ntfy.entrypoints=https"
+      - "traefik.http.routers.ntfy.tls=true"
+      - "traefik.http.routers.ntfy.tls.certresolver=le"
+      # Service
+      - "traefik.http.services.ntfy.loadbalancer.server.port=80"
+      # Middlewares
+      - "traefik.http.routers.ntfy.middlewares=ntfy-headers@file"
+      # HTTP to HTTPS redirect
+      - "traefik.http.routers.ntfy-http.rule=Host(`ntfy.${DOMAINN}`)"
+      - "traefik.http.routers.ntfy-http.entrypoints=http"
+      - "traefik.http.routers.ntfy-http.middlewares=redirect-to-https@docker"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.permanent=true"
+
