@@ -1,14 +1,12 @@
-version: '3.8'
-
 services:
   ntfy:
     image: binwiederhier/ntfy:latest
     container_name: ntfy
     command:
       - serve
-    user: "${UID}:${GID}"  # Run as UID:GID 1000
+    user: "${NTFY_UID:-1000}:${NTFY_GID:-1000}"  # Run as UID:GID 1000
     environment:
-      - TZ=America/New_York
+      - TZ=${TZ:-America/New_York}
     volumes:
       - ${APP_PATH}ntfy/cache:/var/cache/ntfy
       - ${APP_PATH}ntfy/etc:/etc/ntfy
@@ -32,4 +30,6 @@ services:
       - "traefik.http.routers.ntfy-http.middlewares=redirect-to-https@docker"
       - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
       - "traefik.http.middlewares.redirect-to-https.redirectscheme.permanent=true"
+
+
 
